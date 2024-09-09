@@ -19,7 +19,9 @@ namespace WpfApp2
     /// </summary>
     public partial class MainWindow : Window
     {
-        ObservableCollection<Lego> legok = new ObservableCollection<Lego>();
+        ObservableCollection<Lego> legok = new();
+        List<string> kategoriak = new();
+        ObservableCollection<Lego> filtered = new();
         public MainWindow()
         {
             InitializeComponent();
@@ -46,28 +48,49 @@ namespace WpfApp2
                 }
                 dgTablazat.ItemsSource = legok;
                 lbElemek.Content = legok.Count();
+                kategoriak = legok.Select(x => x.CategoryName).Distinct().ToList();
+                kategoriak.Add("none");
+                cbKategoriak.ItemsSource = kategoriak;
+                cbKategoriak.SelectedIndex = kategoriak.Count()-1;
+                filtered = legok;
+               
             }
         }
 
-
-        private void tbNev_TextChanged(object sender, TextChangedEventArgs e)
+        private void Filters()
         {
-            ObservableCollection<Lego> filtered = new();
-            if (tbNev.Text != "" && tbAzon.Text == "")
+            filtered = legok as ObservableCollection<Lego>;
+            if (tbNev.Text != "")
             {
-                legok.Where(x => x.ItemName.ToLower().StartsWith(tbNev.Text.ToLower())).ToList().ForEach(x=> filtered.Add(x)) ;
+                filtered = new ObservableCollection<Lego>(filtered.Where(x => x.ItemName.ToLower().StartsWith(tbNev.Text.ToLower())));
             }
-            else if (tbAzon.Text != "" && tbNev.Text == "")
+            if (tbAzon.Text != "")
             {
-                legok.Where(x => x.ItemID.ToLower().StartsWith(tbAzon.Text.ToLower())).ToList().ForEach(x => filtered.Add(x));
+                filtered = new ObservableCollection<Lego>(filtered.Where(x => x.ItemID.ToLower().StartsWith(tbAzon.Text.ToLower())));
             }
-            else
+
+            if (cbKategoriak.SelectedIndex != kategoriak.Count() - 1)
             {
-                legok.Where(x => x.ItemID.ToLower().StartsWith(tbAzon.Text.ToLower()) && x.ItemName.ToLower().StartsWith(tbNev.Text.ToLower())).ToList().ForEach(x => filtered.Add(x));
+                filtered = new ObservableCollection<Lego>(filtered.Where(x => x.CategoryName == cbKategoriak.SelectedItem));
             }
+
             dgTablazat.ItemsSource = filtered;
 
             lbElemek.Content = filtered.Count();
+            kategoriak.Clear();
+            kategoriak = legok.Select(x => x.CategoryName).Distinct().ToList();
+            kategoriak.Add("none");
+            cbKategoriak.ItemsSource = kategoriak;
+        }
+
+        private void tbNev_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Filters();            
+        }
+
+        private void cbKategoriak_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Filters();
         }
     }
 }
