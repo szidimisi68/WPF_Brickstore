@@ -5,15 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1200">
+        Title="MainWindow" Height="600" Width="1400">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="200px"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="250px"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="dgTablazat" DataContext="{Binding legok}" ItemsSource="{Binding legok}" AutoGenerateColumns="True"></DataGrid>
-        <StackPanel Grid.Column="1" Orientation="Vertical">
+        <StackPanel>
             <Button x:Name="btnOpen" Click="btnOpen_Click" Height="40px" Margin="0 20 0 0">Betölt</Button>
+            <Label x:Name="lbFolder"></Label>
+            <ListBox x:Name="lbxList" SelectionChanged="lbxList_SelectionChanged"></ListBox>
+        </StackPanel>
+        <DataGrid x:Name="dgTablazat" Grid.Column="1" DataContext="{Binding legok}" ItemsSource="{Binding legok}" AutoGenerateColumns="True"></DataGrid>
+        <StackPanel Grid.Column="2" Orientation="Vertical">
+           
             <StackPanel Orientation="Horizontal">
                 <Label>Elemek száma: </Label>
                 <Label x:Name="lbElemek"></Label>
@@ -31,6 +37,7 @@
                 <Label>Kategóriák: </Label>
                 <ComboBox x:Name="cbKategoriak" SelectionChanged="cbKategoriak_SelectionChanged"></ComboBox>
             </StackPanel>
+            <Button x:Name="btnReset" Height="30px" Margin="10px" Click="btnReset_Click">Reset filter</Button>
         </StackPanel>
     </Grid>
 </Window>
